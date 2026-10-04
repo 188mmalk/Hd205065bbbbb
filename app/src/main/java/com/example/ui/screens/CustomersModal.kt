@@ -2896,13 +2896,14 @@ fun TabAllCustomers(viewModel: InvoiceViewModel, onDismiss: () -> Unit = {}) {
               }
 
               // شارة الرصيد
+              val currSymbol = c.resolveCurrency()
               Surface(
                 color = if (c.balance > 0) Color(0xFFFFEBEE) else Color(0xFFE8F5E9),
                 shape = RoundedCornerShape(6.dp),
                 border = androidx.compose.foundation.BorderStroke(1.dp, if (c.balance > 0) Color(0xFFFFCDD2) else Color(0xFFC8E6C9))
               ) {
                 Text(
-                  text = "الرصيد: ${ArabicNumberHelper.formatAmount(c.balance)} $",
+                  text = "الرصيد: ${ArabicNumberHelper.formatAmount(c.balance)} $currSymbol",
                   fontWeight = FontWeight.ExtraBold,
                   fontSize = 13.sp,
                   color = if (c.balance > 0) Color(0xFFD32F2F) else Color(0xFF2E7D32),
@@ -2998,7 +2999,7 @@ fun TabAllCustomers(viewModel: InvoiceViewModel, onDismiss: () -> Unit = {}) {
     }
   }
 
-  // Delete Customer Confirmation Dialog
+  // Delete Customer Confirmation Dialog in All Customers Tab
   customerToDelete?.let { c ->
     AlertDialog(
       onDismissRequest = { customerToDelete = null },
@@ -3034,7 +3035,7 @@ fun TabAllCustomers(viewModel: InvoiceViewModel, onDismiss: () -> Unit = {}) {
               val bal = c.balance
               val balColor = if (bal > 0) Color(0xFFC62828) else if (bal < 0) Color(0xFF2E7D32) else Color(0xFF495057)
               Text(
-                "💰 الرصيد الحالي: ${ArabicNumberHelper.formatAmount(bal)} $",
+                "💰 الرصيد الحالي: ${ArabicNumberHelper.formatAmount(bal)} ${c.resolveCurrency()}",
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 13.sp,
                 color = balColor
@@ -3870,6 +3871,7 @@ fun TabCustomersWithBalancesOnly(viewModel: InvoiceViewModel, onDismiss: () -> U
 
               // شارة الرصيد مع توضيح مدين / دائن
               val isDebit = c.balance > 0
+              val currSymbol = c.resolveCurrency()
               Surface(
                 color = if (isDebit) Color(0xFFFFEBEE) else Color(0xFFE8F5E9),
                 shape = RoundedCornerShape(6.dp),
@@ -3880,7 +3882,7 @@ fun TabCustomersWithBalancesOnly(viewModel: InvoiceViewModel, onDismiss: () -> U
                   horizontalAlignment = Alignment.End
                 ) {
                   Text(
-                    text = "${ArabicNumberHelper.formatAmount(Math.abs(c.balance))} $",
+                    text = "${ArabicNumberHelper.formatAmount(Math.abs(c.balance))} $currSymbol",
                     fontWeight = FontWeight.Black,
                     fontSize = 13.5.sp,
                     color = if (isDebit) Color(0xFFD32F2F) else Color(0xFF2E7D32)
@@ -3974,7 +3976,7 @@ fun TabCustomersWithBalancesOnly(viewModel: InvoiceViewModel, onDismiss: () -> U
     }
   }
 
-  // Delete Customer Confirmation Dialog
+  // Delete Customer Confirmation Dialog in Balances Tab
   customerToDelete?.let { c ->
     AlertDialog(
       onDismissRequest = { customerToDelete = null },
@@ -4010,7 +4012,7 @@ fun TabCustomersWithBalancesOnly(viewModel: InvoiceViewModel, onDismiss: () -> U
               val bal = c.balance
               val balColor = if (bal > 0) Color(0xFFC62828) else if (bal < 0) Color(0xFF2E7D32) else Color(0xFF495057)
               Text(
-                "💰 الرصيد الحالي: ${ArabicNumberHelper.formatAmount(bal)} $",
+                "💰 الرصيد الحالي: ${ArabicNumberHelper.formatAmount(bal)} ${c.resolveCurrency()}",
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 13.sp,
                 color = balColor
@@ -4488,7 +4490,7 @@ fun TabCustomerStatement(viewModel: InvoiceViewModel, onDismiss: () -> Unit) {
             Text("حساب: ${customer.accountNumber} | هاتف: ${customer.phone.ifEmpty { "—" }}", fontSize = 12.sp, color = Color.Gray)
           }
           Text(
-            "${ArabicNumberHelper.formatAmount(customer.balance)} $",
+            "${ArabicNumberHelper.formatAmount(customer.balance)} ${customer.resolveCurrency()}",
             fontWeight = FontWeight.ExtraBold,
             fontSize = 14.sp,
             color = if (customer.balance > 0) Color(0xFFD32F2F) else Color(0xFF28A745)
@@ -4678,7 +4680,7 @@ fun TabCustomerStatementDateRange(viewModel: InvoiceViewModel, onDismiss: () -> 
                   Text("حساب: ${customer.accountNumber} | هاتف: ${customer.phone.ifEmpty { "—" }}", fontSize = 12.sp, color = Color.Gray)
                 }
                 Text(
-                  text = "${ArabicNumberHelper.formatAmount(customer.balance)} $",
+                  text = "${ArabicNumberHelper.formatAmount(customer.balance)} ${customer.resolveCurrency()}",
                   fontWeight = FontWeight.ExtraBold,
                   fontSize = 14.sp,
                   color = if (customer.balance > 0) Color(0xFFD32F2F) else Color(0xFF28A745)
@@ -4714,7 +4716,7 @@ fun TabCustomerStatementDateRange(viewModel: InvoiceViewModel, onDismiss: () -> 
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-              text = "رقم الحساب: ${customer.accountNumber} | الرصيد الحالي: ${ArabicNumberHelper.formatAmount(customer.balance)} $",
+              text = "رقم الحساب: ${customer.accountNumber} | الرصيد الحالي: ${ArabicNumberHelper.formatAmount(customer.balance)} ${customer.resolveCurrency()}",
               fontSize = 12.5.sp,
               fontWeight = FontWeight.SemiBold,
               color = Color(0xFF555555)
@@ -5536,7 +5538,7 @@ fun CustomersWithBalancePreviewDialog(
                   Text(c.name, modifier = Modifier.weight(2.0f), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1A237E))
                   Text(c.phone.ifEmpty { "-" }, modifier = Modifier.weight(1.4f), fontSize = 11.5.sp, color = Color.DarkGray)
                   Text(
-                    "${ArabicNumberHelper.formatAmount(c.balance)} $",
+                    "${ArabicNumberHelper.formatAmount(c.balance)} ${c.resolveCurrency()}",
                     modifier = Modifier.weight(1.5f),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.ExtraBold,

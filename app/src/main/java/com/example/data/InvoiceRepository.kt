@@ -662,7 +662,8 @@ class InvoiceRepository(context: Context) {
             phone = obj.optString("phone"),
             address = obj.optString("address"),
             balance = obj.optDouble("balance", 0.0),
-            transactions = txList
+            transactions = txList,
+            currency = obj.optString("currency", if (txList.isNotEmpty()) txList.last().currency else "YER")
           )
         )
       }
@@ -698,6 +699,7 @@ class InvoiceRepository(context: Context) {
         put("phone", c.phone)
         put("address", c.address)
         put("balance", c.balance)
+        put("currency", c.resolveCurrency())
         val txArray = JSONArray()
         for (t in c.transactions) {
           txArray.put(JSONObject().apply {

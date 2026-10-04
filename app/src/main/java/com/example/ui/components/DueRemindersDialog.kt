@@ -123,7 +123,7 @@ fun DueRemindersDialog(
                   )
                   if (rem.amountDue > 0) {
                     Text(
-                      text = "${ArabicNumberHelper.formatAmount(rem.amountDue)} $",
+                      text = "${ArabicNumberHelper.formatAmount(rem.amountDue)} ${rem.currency}",
                       fontWeight = FontWeight.Black,
                       fontSize = 13.sp,
                       color = Color(0xFF7E22CE)

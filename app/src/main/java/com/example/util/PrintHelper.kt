@@ -1048,7 +1048,7 @@ object PrintHelper {
           <td style="color:${reportConfig.customerAccountColorHex};font-weight:900;">${c.accountNumber}</td>
           <td style="color:${reportConfig.customerNameColorHex};font-weight:bold;">${c.name}</td>
           <td>${c.phone}</td>
-          <td style="$rowColor font-weight:800;">${ArabicNumberHelper.formatAmount(c.balance)}</td>
+          <td style="$rowColor font-weight:800;">${ArabicNumberHelper.formatAmount(c.balance)} ${c.resolveCurrency()}</td>
           <td>${c.transactions.size}</td>
         </tr>
       """.trimIndent()

@@ -30,8 +30,22 @@ data class Customer(
   val phone: String = "",
   val address: String = "",
   val balance: Double = 0.0,
-  val transactions: List<TransactionRecord> = emptyList()
-)
+  val transactions: List<TransactionRecord> = emptyList(),
+  val currency: String = "YER"
+) {
+  fun resolveCurrency(): String {
+    val tx = transactions.lastOrNull { it.currency.isNotBlank() }
+      ?: transactions.firstOrNull { it.currency.isNotBlank() }
+    val raw = tx?.currency?.trim() ?: currency.trim()
+    return when {
+      raw.isBlank() -> if (currency.isNotBlank()) currency else "YER"
+      raw == "$" || raw.equals("USD", ignoreCase = true) || raw.contains("دولار") -> "$"
+      raw.equals("SAR", ignoreCase = true) || raw.equals("SR", ignoreCase = true) || raw.contains("سعود") || raw == "ر.س" -> "SAR"
+      raw.equals("YER", ignoreCase = true) || raw.equals("YR", ignoreCase = true) || raw.contains("يمن") || raw == "ر.ي" -> "YER"
+      else -> raw
+    }
+  }
+}
 
 data class ExchangeRates(
   val yerToUsd: Double = 0.001876,

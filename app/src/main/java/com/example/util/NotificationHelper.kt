@@ -63,7 +63,7 @@ object NotificationHelper {
 
       if (dueReminders.size == 1) {
         val rem = dueReminders.first()
-        val amountStr = if (rem.amountDue > 0) " بمبلغ ${ArabicNumberHelper.formatAmount(rem.amountDue)} $" else ""
+        val amountStr = if (rem.amountDue > 0) " بمبلغ ${ArabicNumberHelper.formatAmount(rem.amountDue)} ${rem.currency}" else ""
         val timeStr = if (rem.dueTime.isNotBlank()) " الساعة ${rem.dueTime}" else ""
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
           .setSmallIcon(R.mipmap.ic_launcher)

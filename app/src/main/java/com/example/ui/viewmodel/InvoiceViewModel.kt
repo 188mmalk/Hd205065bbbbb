@@ -782,12 +782,14 @@ class InvoiceViewModel(application: Application) : AndroidViewModel(application)
   }
 
   fun setAppThemePreset(preset: AppThemePreset) {
-    val updated = _uiState.value.uiCustomizationConfig.copy(
+    val current = _uiState.value.uiCustomizationConfig
+    val updated = current.copy(
       themePresetId = preset.id,
       customPrimaryColorHex = preset.primaryHex,
       customSecondaryColorHex = preset.secondaryHex,
       customBgColorHex = preset.bgHex,
-      customCardColorHex = preset.cardHex
+      customCardColorHex = preset.cardHex,
+      useOceanWallpaper = if (preset == AppThemePreset.OCEAN_AZURE_GOLD) true else current.useOceanWallpaper
     )
     repository.saveUiCustomizationConfig(updated)
     _uiState.value = _uiState.value.copy(uiCustomizationConfig = updated)

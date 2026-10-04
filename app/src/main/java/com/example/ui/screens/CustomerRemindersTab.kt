@@ -574,7 +574,7 @@ fun ReminderCard(
             color = Color(0xFFF3E8FF)
           ) {
             Text(
-              text = "${ArabicNumberHelper.formatAmount(reminder.amountDue)} $",
+              text = "${ArabicNumberHelper.formatAmount(reminder.amountDue)} ${reminder.currency}",
               fontSize = 13.5.sp,
               fontWeight = FontWeight.Black,
               color = Color(0xFF7E22CE),
@@ -814,7 +814,7 @@ fun CustomerReminderFormDialog(
                 text = {
                   Column {
                     Text(cust.name, fontWeight = FontWeight.Bold, fontSize = 13.sp)
-                    Text("حساب: ${cust.accountNumber} | رصيد: ${ArabicNumberHelper.formatAmount(cust.balance)} $", fontSize = 11.sp, color = Color.Gray)
+                    Text("حساب: ${cust.accountNumber} | رصيد: ${ArabicNumberHelper.formatAmount(cust.balance)} ${cust.resolveCurrency()}", fontSize = 11.sp, color = Color.Gray)
                   }
                 },
                 onClick = {
@@ -1082,7 +1082,7 @@ fun CustomerReminderFormDialog(
             title = title.ifBlank { "ميعاد تسديد قسط" },
             note = note,
             amountDue = amountVal,
-            currency = "YER",
+            currency = customer.resolveCurrency(),
             createdAt = initialReminder?.createdAt ?: ArabicNumberHelper.formatDateTime(),
             dueDate = dateFormat.format(dueCalendar.time),
             dueTime = formattedTime,
