@@ -663,7 +663,7 @@ class InvoiceRepository(context: Context) {
             address = obj.optString("address"),
             balance = obj.optDouble("balance", 0.0),
             transactions = txList,
-            currency = obj.optString("currency", if (txList.isNotEmpty()) txList.last().currency else "YER")
+            currency = obj.optString("currency", if (txList.isNotEmpty()) (txList.find { it.type == "افتتاح" && it.currency.isNotBlank() } ?: txList.firstOrNull { it.currency.isNotBlank() })?.currency ?: "YER" else "YER")
           )
         )
       }
@@ -756,8 +756,8 @@ class InvoiceRepository(context: Context) {
     }
 
     val defaultRates = try { exchangeRates } catch (_: Throwable) { null } ?: loadExchangeRates()
-    // Determine the base currency of this customer account (first non-empty transaction currency or USD)
-    val baseCurrency = customer.transactions.firstOrNull { it.currency.isNotBlank() }?.currency ?: "$"
+    // Determine the base currency of this customer account
+    val baseCurrency = customer.resolveCurrency()
 
     var currentBalanceInBase = 0.0
     val updatedTransactions = customer.transactions.map { t ->

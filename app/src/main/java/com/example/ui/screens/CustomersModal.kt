@@ -2946,16 +2946,19 @@ fun TabAllCustomers(viewModel: InvoiceViewModel, onDismiss: () -> Unit = {}) {
 
               // شارة الرصيد
               val currSymbol = c.resolveCurrency()
+              val isDebit = c.balance > 0.005
+              val isCredit = c.balance < -0.005
+              val statusLabel = if (isDebit) " (عليكم)" else if (isCredit) " (لكم)" else " (متزن)"
               Surface(
-                color = if (c.balance > 0) Color(0xFFFFEBEE) else Color(0xFFE8F5E9),
+                color = if (isDebit) Color(0xFFFFEBEE) else if (isCredit) Color(0xFFE8F5E9) else Color(0xFFF1F5F9),
                 shape = RoundedCornerShape(6.dp),
-                border = androidx.compose.foundation.BorderStroke(1.dp, if (c.balance > 0) Color(0xFFFFCDD2) else Color(0xFFC8E6C9))
+                border = androidx.compose.foundation.BorderStroke(1.dp, if (isDebit) Color(0xFFFFCDD2) else if (isCredit) Color(0xFFC8E6C9) else Color(0xFFE2E8F0))
               ) {
                 Text(
-                  text = "الرصيد: ${ArabicNumberHelper.formatAmount(c.balance)} $currSymbol",
+                  text = "الرصيد: ${ArabicNumberHelper.formatAmount(Math.abs(c.balance))} $currSymbol$statusLabel",
                   fontWeight = FontWeight.ExtraBold,
                   fontSize = 13.sp,
-                  color = if (c.balance > 0) Color(0xFFD32F2F) else Color(0xFF2E7D32),
+                  color = if (isDebit) Color(0xFFD32F2F) else if (isCredit) Color(0xFF2E7D32) else Color(0xFF455A64),
                   modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                 )
               }

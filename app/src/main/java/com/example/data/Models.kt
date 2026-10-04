@@ -34,11 +34,11 @@ data class Customer(
   val currency: String = "YER"
 ) {
   fun resolveCurrency(): String {
-    val tx = transactions.lastOrNull { it.currency.isNotBlank() }
-      ?: transactions.firstOrNull { it.currency.isNotBlank() }
-    val raw = tx?.currency?.trim() ?: currency.trim()
+    val raw = transactions.find { it.type == "افتتاح" && it.currency.isNotBlank() }?.currency?.trim()
+      ?: transactions.firstOrNull { it.currency.isNotBlank() }?.currency?.trim()
+      ?: (if (currency.isNotBlank()) currency.trim() else "YER")
     return when {
-      raw.isBlank() -> if (currency.isNotBlank()) currency else "YER"
+      raw.isBlank() -> "YER"
       raw == "$" || raw.equals("USD", ignoreCase = true) || raw.contains("دولار") -> "$"
       raw.equals("SAR", ignoreCase = true) || raw.equals("SR", ignoreCase = true) || raw.contains("سعود") || raw == "ر.س" -> "SAR"
       raw.equals("YER", ignoreCase = true) || raw.equals("YR", ignoreCase = true) || raw.contains("يمن") || raw == "ر.ي" -> "YER"

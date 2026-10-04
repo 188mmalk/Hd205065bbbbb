@@ -1728,7 +1728,8 @@ class InvoiceViewModel(application: Application) : AndroidViewModel(application)
       phone = ArabicNumberHelper.toEngDigits(phone).trim(),
       address = address.trim(),
       balance = initialBalance,
-      transactions = initialTx
+      transactions = initialTx,
+      currency = currency
     )
     val updated = repository.customers.toMutableList().apply { add(newC) }
     repository.saveCustomers(updated)
@@ -1800,7 +1801,8 @@ class InvoiceViewModel(application: Application) : AndroidViewModel(application)
         name = newName.ifEmpty { c.name },
         phone = ArabicNumberHelper.toEngDigits(newPhone),
         address = newAddress,
-        transactions = updatedTransactions
+        transactions = updatedTransactions,
+        currency = newCurrency ?: c.currency
       )
 
       val recalculatedCustomer = repository.recalculateCustomerBalance(updatedCustomer)

@@ -613,8 +613,7 @@ object PrintHelper {
       }
     }
 
-    val baseCurrency = customer.transactions.firstOrNull { it.currency.isNotBlank() }?.currency
-      ?: "USD"
+    val baseCurrency = customer.resolveCurrency()
 
     val previousTransactions = if (startCal != null) {
       customer.transactions.filter { t ->

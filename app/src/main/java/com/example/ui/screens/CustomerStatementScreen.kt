@@ -125,8 +125,7 @@ fun CustomerStatementScreen(
   }
 
   // Base currency for multi-currency statement reconciliation
-  val baseCurrency = customer.transactions.firstOrNull { it.currency.isNotBlank() }?.currency
-    ?: "USD"
+  val baseCurrency = customer.resolveCurrency()
 
   // 1. Transactions strictly before the requested statement start date (الرصيد السابق ما قبل الفترة)
   val previousTransactions = if (startCal != null) {
