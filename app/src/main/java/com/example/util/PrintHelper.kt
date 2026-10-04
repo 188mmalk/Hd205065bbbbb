@@ -768,9 +768,7 @@ object PrintHelper {
     }
 
     if (filteredTransactions.isEmpty()) {
-      if (hasPreviousBalance) {
-        rows += """<tr><td colspan="6" style="padding:14px;font-weight:700;color:#64748B;font-size:${13.5 * scale}px;text-align:center;">لا توجد حركات جديدة مسجلة خلال هذه الفترة (الرصيد مرحل من الفترة السابقة)</td></tr>"""
-      } else {
+      if (!hasPreviousBalance) {
         rows = """<tr><td colspan="6" style="padding:18px;font-weight:800;color:#888;font-size:${15 * scale}px;">لا توجد حركات في الفترة المحددة</td></tr>"""
       }
     } else {
@@ -958,12 +956,7 @@ object PrintHelper {
             $rows
           </tbody>
         </table>
-        ${if (hasPreviousBalance) """
-        <div style="margin:8px 0;padding:8px 12px;background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:8px;display:flex;justify-content:space-between;align-items:center;font-size:${13.5 * scale}px;font-weight:800;">
-          <span style="color:#0D47A1;">📌 الرصيد السابق المنقول (ما قبل الفترة):</span>
-          <span dir="ltr" style="color:${if (previousBalance > 0.005) "#C62828" else "#2E7D32"};font-size:${15 * scale}px;font-weight:900;">$finalSymBlue ${ArabicNumberHelper.formatAmount(Math.abs(previousBalance))} (${if (previousBalance > 0.005) "عليكم" else "لكم"})</span>
-        </div>
-        """ else ""}
+
         <div class="footer-summary-container">
           <div style="flex:1;border:2px solid #EF5350;background:#fff;padding:12px 10px;border-radius:10px;text-align:center;">
             <div style="font-size:${14.5 * scale}px;font-weight:900;color:#C62828;">إجمالي عليكم</div>

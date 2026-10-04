@@ -1004,24 +1004,22 @@ fun CustomerStatementScreen(
                 }
 
                 if (filteredTransactions.isEmpty()) {
-                  StatementBorderH(primaryBlue)
-                  Box(
-                    modifier = Modifier
-                      .fillMaxWidth()
-                      .padding(18.dp),
-                    contentAlignment = Alignment.Center
-                  ) {
-                    Text(
-                      text = if (hasPreviousBalance) {
-                        "لا توجد حركات جديدة مسجلة خلال هذه الفترة (الرصيد مرحل من الفترة السابقة)"
-                      } else {
-                        "لا توجد حركات في الفترة المحددة"
-                      },
-                      fontWeight = FontWeight.Bold,
-                      color = Color.Gray,
-                      fontSize = 12.5.sp,
-                      textAlign = TextAlign.Center
-                    )
+                  if (!hasPreviousBalance) {
+                    StatementBorderH(primaryBlue)
+                    Box(
+                      modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(18.dp),
+                      contentAlignment = Alignment.Center
+                    ) {
+                      Text(
+                        text = "لا توجد حركات في الفترة المحددة",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Gray,
+                        fontSize = 12.5.sp,
+                        textAlign = TextAlign.Center
+                      )
+                    }
                   }
                 } else {
                   filteredTransactions.forEach { t ->
@@ -1207,47 +1205,7 @@ fun CustomerStatementScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // PREVIOUS BALANCE BANNER CARD IF FILTERED
-            if (hasPreviousBalance) {
-              Card(
-                modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(bottom = 6.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFF8FAFC)),
-                border = BorderStroke(1.2.dp, Color(0xFF90CAF9))
-              ) {
-                Row(
-                  modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 7.dp),
-                  horizontalArrangement = Arrangement.SpaceBetween,
-                  verticalAlignment = Alignment.CenterVertically
-                ) {
-                  Text(
-                    text = "📌 الرصيد السابق المنقول (ما قبل الفترة):",
-                    fontSize = 12.5.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Color(0xFF0D47A1)
-                  )
-                  val prevSym = ArabicNumberHelper.getCurrencySymbol(baseCurrency)
-                  CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                    Text(
-                      text = buildAnnotatedString {
-                        withStyle(SpanStyle(color = Color(0xFF0070BA), fontWeight = FontWeight.Black)) {
-                          append(prevSym)
-                        }
-                        withStyle(SpanStyle(color = if (previousBalance > 0) debitRed else creditGreen, fontWeight = FontWeight.Black)) {
-                          append(" ${ArabicNumberHelper.formatAmount(Math.abs(previousBalance))} (${if (previousBalance > 0) "عليكم" else "لكم"})")
-                        }
-                      },
-                      fontSize = 14.sp,
-                      fontWeight = FontWeight.Black
-                    )
-                  }
-                }
-              }
-            }
+
 
             // SUMMARY 3 CARDS IN A ROW
             Row(
@@ -1402,18 +1360,7 @@ fun CustomerStatementScreen(
             }
 
 
-            if (reportConfig.showAmountInWords && Math.abs(finalBalance) >= 0.005) {
-              val curr = baseCurrency
-              val words = "${ArabicNumberHelper.numberToArabicWords(Math.abs(finalBalance))} ${ArabicNumberHelper.getCurrencyName(curr)}"
-              Text(
-                text = "المبلغ كتابة: $words",
-                fontSize = (12 * reportConfig.fontScale).sp,
-                fontWeight = FontWeight.Bold,
-                color = primaryText,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
-              )
-            }
+
 
             // SIGNATURES & APPROVAL SEAL (if enabled in reportConfig)
             if (reportConfig.showSignatures) {

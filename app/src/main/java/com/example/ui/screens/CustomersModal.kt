@@ -30,6 +30,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
@@ -939,14 +940,27 @@ fun TabPaymentVoucher(viewModel: InvoiceViewModel) {
   ) {
     if (!isFormVisible) {
       Button(
-        onClick = { isFormVisible = true },
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF15803D)),
+        onClick = {
+          acc = ""
+          amountStr = ""
+          note = ""
+          voucherDate = ArabicNumberHelper.formatDateTime()
+          customVoucherNum = uiState.nextPaymentVoucherNum.toString()
+          isFormVisible = true
+        },
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDC2626)),
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
           .fillMaxWidth()
           .height(50.dp)
       ) {
-        Text("➕ إضافة سند صرف جديد", fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color.White)
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+          Icon(Icons.Default.Add, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+          Text("➕ إضافة سند صرف", fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color.White)
+        }
       }
     } else {
       // Row 1: رقم السند (يمين) | العملة (يسار) - مطابق للصورة تماماً
@@ -1215,14 +1229,10 @@ fun TabPaymentVoucher(viewModel: InvoiceViewModel) {
               )
               val bal = matchedCustomer.balance
               val custCurrency = matchedCustomer.resolveCurrency()
-              val statusText = if (bal > 0) " (عليه دين)" else if (bal < 0) " (له دائن)" else " (متزن)"
-              val balColor = if (bal > 0) Color(0xFFC62828) else if (bal < 0) Color(0xFF2E7D32) else Color(0xFF455A64)
-              val equivalentText = if (bal != 0.0 && curr != custCurrency) {
-                val converted = ArabicNumberHelper.convertCurrency(bal, custCurrency, curr, uiState.exchangeRates)
-                " (يعادل ${ArabicNumberHelper.formatAmount(converted)} $curr)"
-              } else ""
+              val statusText = if (bal > 0.005) " (عليكم)" else if (bal < -0.005) " (لكم)" else " (متزن)"
+              val balColor = if (bal > 0.005) Color(0xFFC62828) else if (bal < -0.005) Color(0xFF2E7D32) else Color(0xFF455A64)
               Text(
-                text = "${ArabicNumberHelper.formatAmount(bal)} $custCurrency$equivalentText$statusText",
+                text = "${ArabicNumberHelper.formatAmount(Math.abs(bal))} $custCurrency$statusText",
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 14.sp,
                 color = balColor
@@ -1360,6 +1370,16 @@ fun TabPaymentVoucher(viewModel: InvoiceViewModel) {
             modifier = Modifier.size(20.dp)
           )
         }
+      }
+
+      OutlinedButton(
+        onClick = { isFormVisible = false },
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(44.dp)
+      ) {
+        Text("إلغاء وإخفاء الحقول", fontWeight = FontWeight.Bold, color = Color(0xFF64748B), fontSize = 14.sp)
       }
     }
 
@@ -1794,14 +1814,27 @@ fun TabReceiptVoucher(viewModel: InvoiceViewModel) {
   ) {
     if (!isFormVisible) {
       Button(
-        onClick = { isFormVisible = true },
+        onClick = {
+          acc = ""
+          amountStr = ""
+          note = ""
+          voucherDate = ArabicNumberHelper.formatDateTime()
+          customVoucherNum = uiState.nextReceiptVoucherNum.toString()
+          isFormVisible = true
+        },
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF15803D)),
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
           .fillMaxWidth()
           .height(50.dp)
       ) {
-        Text("➕ إضافة سند قبض جديد", fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color.White)
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+          Icon(Icons.Default.Add, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+          Text("➕ إضافة سند قبض", fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color.White)
+        }
       }
     } else {
       // Row 1: رقم السند (يمين) | العملة (يسار) - مطابق للصورة تماماً
@@ -2070,14 +2103,10 @@ fun TabReceiptVoucher(viewModel: InvoiceViewModel) {
               )
               val bal = matchedCustomer.balance
               val custCurrency = matchedCustomer.resolveCurrency()
-              val statusText = if (bal > 0) " (عليه دين سابق)" else if (bal < 0) " (له دائن)" else " (متزن)"
-              val balColor = if (bal > 0) Color(0xFFC62828) else if (bal < 0) Color(0xFF2E7D32) else Color(0xFF455A64)
-              val equivalentText = if (bal != 0.0 && curr != custCurrency) {
-                val converted = ArabicNumberHelper.convertCurrency(bal, custCurrency, curr, uiState.exchangeRates)
-                " (يعادل ${ArabicNumberHelper.formatAmount(converted)} $curr)"
-              } else ""
+              val statusText = if (bal > 0.005) " (عليكم)" else if (bal < -0.005) " (لكم)" else " (متزن)"
+              val balColor = if (bal > 0.005) Color(0xFFC62828) else if (bal < -0.005) Color(0xFF2E7D32) else Color(0xFF455A64)
               Text(
-                text = "${ArabicNumberHelper.formatAmount(bal)} $custCurrency$equivalentText$statusText",
+                text = "${ArabicNumberHelper.formatAmount(Math.abs(bal))} $custCurrency$statusText",
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 14.sp,
                 color = balColor
@@ -2215,6 +2244,16 @@ fun TabReceiptVoucher(viewModel: InvoiceViewModel) {
             modifier = Modifier.size(20.dp)
           )
         }
+      }
+
+      OutlinedButton(
+        onClick = { isFormVisible = false },
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(44.dp)
+      ) {
+        Text("إلغاء وإخفاء الحقول", fontWeight = FontWeight.Bold, color = Color(0xFF64748B), fontSize = 14.sp)
       }
     }
 

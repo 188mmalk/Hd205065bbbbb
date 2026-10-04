@@ -1017,14 +1017,10 @@ fun InvoiceFormSection(viewModel: InvoiceViewModel) {
                 Text("💰 الرصيد الحالي للعميل:", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = Color(0xFF333333))
                 val bal = matchedCustomer.balance
                 val custCurrency = matchedCustomer.resolveCurrency()
-                val statusText = if (bal > 0) " (عليه دين سابق)" else if (bal < 0) " (له رصيد دائن)" else " (متزن / 0)"
-                val balColor = if (bal > 0) Color(0xFFC62828) else if (bal < 0) Color(0xFF2E7D32) else Color(0xFF455A64)
-                val equivalentText = if (bal != 0.0 && uiState.currency != custCurrency) {
-                  val converted = com.example.util.ArabicNumberHelper.convertCurrency(bal, custCurrency, uiState.currency, uiState.exchangeRates)
-                  " (يعادل ${com.example.util.ArabicNumberHelper.formatAmount(converted)} ${uiState.currency})"
-                } else ""
+                val statusText = if (bal > 0.005) " (عليكم)" else if (bal < -0.005) " (لكم)" else " (متزن)"
+                val balColor = if (bal > 0.005) Color(0xFFC62828) else if (bal < -0.005) Color(0xFF2E7D32) else Color(0xFF455A64)
                 Text(
-                  text = "${com.example.util.ArabicNumberHelper.formatAmount(bal)} $custCurrency$equivalentText$statusText",
+                  text = "${com.example.util.ArabicNumberHelper.formatAmount(Math.abs(bal))} $custCurrency$statusText",
                   fontWeight = FontWeight.ExtraBold,
                   fontSize = 14.sp,
                   color = balColor
