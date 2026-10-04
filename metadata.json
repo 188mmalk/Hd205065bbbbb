@@ -1,0 +1,8 @@
+{
+  "name": "المملكة للإلكترونيات",
+  "description": "تطبيق إدارة الفواتير وسندات القبض وحسابات العملاء والتقارير المالية للمملكة للإلكترونيات",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
