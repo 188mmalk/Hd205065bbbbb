@@ -615,8 +615,8 @@ fun MainScreen(viewModel: InvoiceViewModel) {
           Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = if (appTheme.isDark) appTheme.cardColor else Color(0xFFECEFF1)),
-            border = androidx.compose.foundation.BorderStroke(1.2.dp, if (appTheme.isDark) appTheme.cardBorder.copy(alpha = 0.6f) else Color(0xFFCFD8DC)),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFECEFF1)),
+            border = androidx.compose.foundation.BorderStroke(1.2.dp, Color(0xFFCFD8DC)),
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
           ) {
             Column(
@@ -637,7 +637,7 @@ fun MainScreen(viewModel: InvoiceViewModel) {
                     text = if (uiState.editingInvoiceId != null) "✏️ تعديل الفاتورة (${uiState.invNum})" else "📋 إدخال بيانات الفاتورة",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = if (appTheme.isDark) Color.White else Color(0xFF111827)
+                    color = Color(0xFF111827)
                   )
                 }
                 IconButton(onClick = { viewModel.closeInvoiceForm() }) {
@@ -1016,10 +1016,15 @@ fun InvoiceFormSection(viewModel: InvoiceViewModel) {
               ) {
                 Text("💰 الرصيد الحالي للعميل:", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = Color(0xFF333333))
                 val bal = matchedCustomer.balance
+                val custCurrency = matchedCustomer.resolveCurrency()
                 val statusText = if (bal > 0) " (عليه دين سابق)" else if (bal < 0) " (له رصيد دائن)" else " (متزن / 0)"
                 val balColor = if (bal > 0) Color(0xFFC62828) else if (bal < 0) Color(0xFF2E7D32) else Color(0xFF455A64)
+                val equivalentText = if (bal != 0.0 && uiState.currency != custCurrency) {
+                  val converted = com.example.util.ArabicNumberHelper.convertCurrency(bal, custCurrency, uiState.currency, uiState.exchangeRates)
+                  " (يعادل ${com.example.util.ArabicNumberHelper.formatAmount(converted)} ${uiState.currency})"
+                } else ""
                 Text(
-                  text = "${com.example.util.ArabicNumberHelper.formatAmount(bal)} ${uiState.currency}$statusText",
+                  text = "${com.example.util.ArabicNumberHelper.formatAmount(bal)} $custCurrency$equivalentText$statusText",
                   fontWeight = FontWeight.ExtraBold,
                   fontSize = 14.sp,
                   color = balColor

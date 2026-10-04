@@ -1214,10 +1214,15 @@ fun TabPaymentVoucher(viewModel: InvoiceViewModel) {
                 color = Color(0xFF333333)
               )
               val bal = matchedCustomer.balance
+              val custCurrency = matchedCustomer.resolveCurrency()
               val statusText = if (bal > 0) " (عليه دين)" else if (bal < 0) " (له دائن)" else " (متزن)"
               val balColor = if (bal > 0) Color(0xFFC62828) else if (bal < 0) Color(0xFF2E7D32) else Color(0xFF455A64)
+              val equivalentText = if (bal != 0.0 && curr != custCurrency) {
+                val converted = ArabicNumberHelper.convertCurrency(bal, custCurrency, curr, uiState.exchangeRates)
+                " (يعادل ${ArabicNumberHelper.formatAmount(converted)} $curr)"
+              } else ""
               Text(
-                text = "${ArabicNumberHelper.formatAmount(bal)} $curr$statusText",
+                text = "${ArabicNumberHelper.formatAmount(bal)} $custCurrency$equivalentText$statusText",
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 14.sp,
                 color = balColor
@@ -2064,10 +2069,15 @@ fun TabReceiptVoucher(viewModel: InvoiceViewModel) {
                 color = Color(0xFF333333)
               )
               val bal = matchedCustomer.balance
+              val custCurrency = matchedCustomer.resolveCurrency()
               val statusText = if (bal > 0) " (عليه دين سابق)" else if (bal < 0) " (له دائن)" else " (متزن)"
               val balColor = if (bal > 0) Color(0xFFC62828) else if (bal < 0) Color(0xFF2E7D32) else Color(0xFF455A64)
+              val equivalentText = if (bal != 0.0 && curr != custCurrency) {
+                val converted = ArabicNumberHelper.convertCurrency(bal, custCurrency, curr, uiState.exchangeRates)
+                " (يعادل ${ArabicNumberHelper.formatAmount(converted)} $curr)"
+              } else ""
               Text(
-                text = "${ArabicNumberHelper.formatAmount(bal)} $curr$statusText",
+                text = "${ArabicNumberHelper.formatAmount(bal)} $custCurrency$equivalentText$statusText",
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 14.sp,
                 color = balColor
