@@ -889,17 +889,35 @@ class InvoiceViewModel(application: Application) : AndroidViewModel(application)
     _uiState.value = _uiState.value.copy(uiCustomizationConfig = updated)
   }
 
+  fun toggleOceanWallpaper(enabled: Boolean) {
+    val current = _uiState.value.uiCustomizationConfig
+    val updated = current.copy(useOceanWallpaper = enabled)
+    repository.saveUiCustomizationConfig(updated)
+    _uiState.value = _uiState.value.copy(uiCustomizationConfig = updated)
+    val msg = if (enabled) "🌊 تم تفعيل خلفية صورة المحيط الجوية" else "تم إيقاف خلفية صورة المحيط"
+    showToast(msg)
+  }
+
+  fun setOceanWallpaperAlpha(alpha: Float) {
+    val current = _uiState.value.uiCustomizationConfig
+    val updated = current.copy(oceanWallpaperAlpha = alpha.coerceIn(0.1f, 0.95f))
+    repository.saveUiCustomizationConfig(updated)
+    _uiState.value = _uiState.value.copy(uiCustomizationConfig = updated)
+  }
+
   fun resetAppThemeToDefault() {
     val updated = _uiState.value.uiCustomizationConfig.copy(
       themePresetId = AppThemePreset.ROYAL_PURPLE.id,
       homeScreenStyleId = HomeScreenStyle.MODERN_CARDS.id,
       customPrimaryColorHex = "#5E258D",
       customSecondaryColorHex = "#8B5CF6",
-      customBgColorHex = "#EEF2F5",
-      customCardColorHex = "#FFFFFF",
+      customBgColorHex = "#1D0B36",
+      customCardColorHex = "#281245",
       customThemeJson = "",
       customBackgroundImageBase64 = "",
-      bgImageAlpha = 0.85f
+      bgImageAlpha = 0.85f,
+      useOceanWallpaper = false,
+      oceanWallpaperAlpha = 0.35f
     )
     repository.saveUiCustomizationConfig(updated)
     _uiState.value = _uiState.value.copy(uiCustomizationConfig = updated)

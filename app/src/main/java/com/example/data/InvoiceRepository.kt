@@ -397,6 +397,17 @@ class InvoiceRepository(context: Context) {
 
       val shadedColorHex = obj.optString("shadedFieldColorHex", "#FFF0F3")
       val shadedAlpha = obj.optDouble("shadedFieldAlpha", 1.0).toFloat().coerceIn(0.05f, 1.0f)
+      val themePresetId = obj.optString("themePresetId", AppThemePreset.ROYAL_PURPLE.id)
+      val homeScreenStyleId = obj.optString("homeScreenStyleId", HomeScreenStyle.MODERN_CARDS.id)
+      val customPrimaryColorHex = obj.optString("customPrimaryColorHex", "#5E258D")
+      val customSecondaryColorHex = obj.optString("customSecondaryColorHex", "#8B5CF6")
+      val customBgColorHex = obj.optString("customBgColorHex", "#ECEFF1")
+      val customCardColorHex = obj.optString("customCardColorHex", "#FFFFFF")
+      val customThemeJson = obj.optString("customThemeJson", "")
+      val customBackgroundImageBase64 = obj.optString("customBackgroundImageBase64", "")
+      val bgImageAlpha = obj.optDouble("bgImageAlpha", 0.85).toFloat()
+      val useOceanWallpaper = obj.optBoolean("useOceanWallpaper", false)
+      val oceanWallpaperAlpha = obj.optDouble("oceanWallpaperAlpha", 0.35).toFloat()
 
       UiCustomizationConfig(
         buttonSize = try { ButtonSize.valueOf(sizeName) } catch (_: Exception) { ButtonSize.MEDIUM },
@@ -405,7 +416,18 @@ class InvoiceRepository(context: Context) {
         buttons = processedButtons,
         formFields = finalFields,
         shadedFieldColorHex = shadedColorHex,
-        shadedFieldAlpha = shadedAlpha
+        shadedFieldAlpha = shadedAlpha,
+        themePresetId = themePresetId,
+        homeScreenStyleId = homeScreenStyleId,
+        customPrimaryColorHex = customPrimaryColorHex,
+        customSecondaryColorHex = customSecondaryColorHex,
+        customBgColorHex = customBgColorHex,
+        customCardColorHex = customCardColorHex,
+        customThemeJson = customThemeJson,
+        customBackgroundImageBase64 = customBackgroundImageBase64,
+        bgImageAlpha = bgImageAlpha,
+        useOceanWallpaper = useOceanWallpaper,
+        oceanWallpaperAlpha = oceanWallpaperAlpha
       )
     } catch (_: Exception) {
       UiCustomizationConfig()
@@ -415,12 +437,23 @@ class InvoiceRepository(context: Context) {
   fun saveUiCustomizationConfig(config: UiCustomizationConfig) {
     uiCustomizationConfig = config
     val obj = JSONObject().apply {
-      put("uiConfigVersion", 3)
+      put("uiConfigVersion", 4)
       put("buttonSize", config.buttonSize.name)
       put("buttonLayout", config.buttonLayout.name)
       put("showQuickShortcutsBar", config.showQuickShortcutsBar)
       put("shadedFieldColorHex", config.shadedFieldColorHex)
       put("shadedFieldAlpha", config.shadedFieldAlpha.toDouble())
+      put("themePresetId", config.themePresetId)
+      put("homeScreenStyleId", config.homeScreenStyleId)
+      put("customPrimaryColorHex", config.customPrimaryColorHex)
+      put("customSecondaryColorHex", config.customSecondaryColorHex)
+      put("customBgColorHex", config.customBgColorHex)
+      put("customCardColorHex", config.customCardColorHex)
+      put("customThemeJson", config.customThemeJson)
+      put("customBackgroundImageBase64", config.customBackgroundImageBase64)
+      put("bgImageAlpha", config.bgImageAlpha.toDouble())
+      put("useOceanWallpaper", config.useOceanWallpaper)
+      put("oceanWallpaperAlpha", config.oceanWallpaperAlpha.toDouble())
       val arr = JSONArray()
       config.buttons.forEach { b ->
         arr.put(JSONObject().apply {

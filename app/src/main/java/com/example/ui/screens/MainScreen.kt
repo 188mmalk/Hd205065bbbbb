@@ -115,6 +115,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.data.AppThemePreset
+import com.example.ui.theme.LocalAppTheme
+import com.example.R
 import com.example.ui.theme.mandatoryTextFieldColors
 import com.example.ui.theme.LocalShadedFieldColor
 import com.example.ui.theme.LocalShadedFieldBorder
@@ -129,6 +132,11 @@ fun MainScreen(viewModel: InvoiceViewModel) {
   val uiState by viewModel.uiState.collectAsState()
   val scrollState = rememberScrollState()
 
+  val appTheme = LocalAppTheme.current
+  val themeConfig = uiState.uiCustomizationConfig
+  val showOceanWallpaper = (themeConfig.themePresetId == AppThemePreset.OCEAN_AZURE_GOLD.id && themeConfig.useOceanWallpaper) ||
+                           themeConfig.useOceanWallpaper
+
   LaunchedEffect(uiState.toastMessage) {
     uiState.toastMessage?.let { msg ->
       Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
@@ -139,18 +147,36 @@ fun MainScreen(viewModel: InvoiceViewModel) {
   Box(
     modifier = Modifier
       .fillMaxSize()
-      .background(
-        Brush.verticalGradient(
-          colors = listOf(
-            Color(0xFF374151),
-            Color(0xFF262C36),
-            Color(0xFF1E232B)
-          )
-        )
-      )
+      .background(Brush.verticalGradient(colors = appTheme.backgroundGradient))
       .statusBarsPadding()
       .navigationBarsPadding()
   ) {
+    if (showOceanWallpaper) {
+      androidx.compose.foundation.Image(
+        painter = androidx.compose.ui.res.painterResource(id = R.drawable.ocean_theme_bg_1791124990380),
+        contentDescription = "خلفية المحيط والرمال الذهبية",
+        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+        modifier = Modifier
+          .fillMaxSize()
+          .graphicsLayer {
+            alpha = themeConfig.oceanWallpaperAlpha.coerceIn(0.1f, 0.95f)
+          }
+      )
+      Box(
+        modifier = Modifier
+          .fillMaxSize()
+          .background(
+            Brush.verticalGradient(
+              listOf(
+                appTheme.backgroundGradient.first().copy(alpha = 0.65f),
+                appTheme.backgroundGradient[1].copy(alpha = 0.82f),
+                appTheme.backgroundGradient.last().copy(alpha = 0.94f)
+              )
+            )
+          )
+      )
+    }
+
     Column(
       modifier = Modifier
         .fillMaxSize()
@@ -183,24 +209,17 @@ fun MainScreen(viewModel: InvoiceViewModel) {
               .shadow(
                 elevation = if (logoPressed) 6.dp else 16.dp,
                 shape = CircleShape,
-                spotColor = Color(0xFF00F2FE),
-                ambientColor = Color(0xFFA855F7)
+                spotColor = appTheme.primary,
+                ambientColor = appTheme.secondary
               )
               .background(
-                Brush.sweepGradient(
-                  listOf(
-                    Color(0xFF00F2FE),
-                    Color(0xFF8B5CF6),
-                    Color(0xFFEC4899),
-                    Color(0xFF00F2FE)
-                  )
-                ),
+                Brush.sweepGradient(appTheme.headerAccentBrush),
                 CircleShape
               )
               .clip(CircleShape)
               .clickable(
                 interactionSource = logoInteraction,
-                indication = ripple(bounded = false, radius = 45.dp, color = Color(0xFF00F2FE))
+                indication = ripple(bounded = false, radius = 45.dp, color = appTheme.primary)
               ) { viewModel.setSettingsModalVisible(true) }
               .padding(3.dp),
             contentAlignment = Alignment.Center
@@ -300,10 +319,10 @@ fun MainScreen(viewModel: InvoiceViewModel) {
               Box {
                 Surface(
                   shape = RoundedCornerShape(8.dp),
-                  color = if (selectedYearInHeader != uiState.activeFiscalYear) Color(0x40F59E0B) else Color(0x3300F2FE),
+                  color = if (selectedYearInHeader != uiState.activeFiscalYear) Color(0x40F59E0B) else appTheme.secondary.copy(alpha = 0.25f),
                   border = BorderStroke(
                     1.dp,
-                    if (selectedYearInHeader != uiState.activeFiscalYear) Color(0xFFF59E0B) else Color(0xFF00F2FE).copy(alpha = 0.7f)
+                    if (selectedYearInHeader != uiState.activeFiscalYear) Color(0xFFF59E0B) else appTheme.primary.copy(alpha = 0.75f)
                   ),
                   modifier = Modifier
                     .height(29.dp)
@@ -321,7 +340,7 @@ fun MainScreen(viewModel: InvoiceViewModel) {
                       fontSize = 11.5.sp,
                       fontWeight = FontWeight.Bold
                     )
-                    Text("▾", color = Color(0xFF38BDF8), fontSize = 11.sp)
+                    Text("▾", color = appTheme.accentColor, fontSize = 11.sp)
                   }
                 }
 
@@ -399,11 +418,7 @@ fun MainScreen(viewModel: InvoiceViewModel) {
                 .height(3.5.dp)
                 .background(
                   Brush.horizontalGradient(
-                    colors = listOf(
-                      Color(0xFF00F2FE),
-                      Color(0xFF818CF8),
-                      Color(0xFFE879F9)
-                    )
+                    colors = appTheme.headerAccentBrush
                   ),
                   RoundedCornerShape(2.dp)
                 )
@@ -600,8 +615,8 @@ fun MainScreen(viewModel: InvoiceViewModel) {
           Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFECEFF1)),
-            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFCFD8DC)),
+            colors = CardDefaults.cardColors(containerColor = if (appTheme.isDark) appTheme.cardColor else Color(0xFFECEFF1)),
+            border = androidx.compose.foundation.BorderStroke(1.2.dp, if (appTheme.isDark) appTheme.cardBorder.copy(alpha = 0.6f) else Color(0xFFCFD8DC)),
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
           ) {
             Column(
@@ -622,7 +637,7 @@ fun MainScreen(viewModel: InvoiceViewModel) {
                     text = if (uiState.editingInvoiceId != null) "✏️ تعديل الفاتورة (${uiState.invNum})" else "📋 إدخال بيانات الفاتورة",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = Color(0xFF111827)
+                    color = if (appTheme.isDark) Color.White else Color(0xFF111827)
                   )
                 }
                 IconButton(onClick = { viewModel.closeInvoiceForm() }) {

@@ -59,10 +59,14 @@ class MainActivity : ComponentActivity() {
     } catch (_: Throwable) {}
     enableEdgeToEdge()
     setContent {
-      MyApplicationTheme {
+      val viewModel: InvoiceViewModel = viewModel()
+      val uiState by viewModel.uiState.collectAsState()
+
+      MyApplicationTheme(themeConfig = uiState.uiCustomizationConfig) {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
           AlmamlakaApp(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            viewModel = viewModel
           )
         }
       }

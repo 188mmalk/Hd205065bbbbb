@@ -155,11 +155,23 @@ enum class AppThemePreset(
     descAr = "البنفسجي الفاخر مع لمسات ملكية مذهبة",
     primaryHex = "#5E258D",
     secondaryHex = "#8B5CF6",
-    bgHex = "#EEF2F5",
-    cardHex = "#FFFFFF",
-    textDarkHex = "#1E1B4B",
+    bgHex = "#1D0B36",
+    cardHex = "#281245",
+    textDarkHex = "#F3E8FF",
     accentHex = "#EAB308",
     emoji = "👑"
+  ),
+  OCEAN_AZURE_GOLD(
+    id = "OCEAN_AZURE_GOLD",
+    titleAr = "سحر المحيط والذهب",
+    descAr = "أزرق المحيط الفيروزي العميق مع رمال ذهبية شاطئية ساحرة",
+    primaryHex = "#0284C7",
+    secondaryHex = "#0369A1",
+    bgHex = "#051A30",
+    cardHex = "#0A284D",
+    textDarkHex = "#F0F9FF",
+    accentHex = "#F59E0B",
+    emoji = "🌊"
   ),
   MODERN_NAVY(
     id = "MODERN_NAVY",
@@ -307,7 +319,9 @@ data class UiCustomizationConfig(
   val customCardColorHex: String = "#FFFFFF",
   val customThemeJson: String = "",
   val customBackgroundImageBase64: String = "",
-  val bgImageAlpha: Float = 0.85f
+  val bgImageAlpha: Float = 0.85f,
+  val useOceanWallpaper: Boolean = false,
+  val oceanWallpaperAlpha: Float = 0.35f
 ) {
   fun currentTheme(): AppThemePreset {
     return AppThemePreset.entries.find { it.id == themePresetId } ?: AppThemePreset.ROYAL_PURPLE
