@@ -23,6 +23,7 @@ import com.example.ui.theme.LocalShadedFieldBorder
 import com.example.ui.theme.computeShadedBorderColor
 import com.example.ui.theme.parseHexColor
 import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -60,7 +61,7 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       val viewModel: InvoiceViewModel = viewModel()
-      val uiState by viewModel.uiState.collectAsState()
+      val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
       MyApplicationTheme(themeConfig = uiState.uiCustomizationConfig) {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -99,7 +100,7 @@ fun AlmamlakaApp(
   viewModel: InvoiceViewModel = viewModel()
 ) {
   val context = LocalContext.current
-  val uiState by viewModel.uiState.collectAsState()
+  val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
